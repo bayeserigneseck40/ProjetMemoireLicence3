@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script typee="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <title>Geolocalisation et google maps</title>
+    <script>
+        $(document).ready(function(){
+         var lat,lng;
+         navigator.geolocation.getCurrentPosition(function(pos){
+             lat=pos.coords.latitude;
+             lng=pos.coords.longitude;
+         });
+             
+       
+        $('a').click(function(){
+               alert('lat:'+lat+'lng:'+lng);
+            var centreCarte=new google.maps.LatLng(lat,lng);
+            var options={
+                zoom:15,
+                center:centreCarte,
+                mapTypeId:google.maps.MapTypeId.HYBRID
+
+            };
+            var carte=new google.maps.Map(document.getElementById('carte'),options);
+            var marker=new google.maps.Marker({
+                position:centreCarte, 
+                map:carte,
+                title:'vous etes ici'
+            })
+            return false;
+        })
+        
+        });
+        var cor=document.getElementsByTagName("a");
+        for(var i=0;i<cor.length;i++){
+
+        
+        cor[i].addEventListener("click",function(){
+
+       
+        var url="pharmacie.php";
+     infos='?latitude='+lat+'&longitude='+lng;
+      url+=infos;
+    //   alert('lat:'+lat+'lng:'+lng);
+      var x=new XMLHttpRequest();
+    x.open('GET',url); 
+    x.send(null);
+    
+    x.onreadystatechange=function(){
+         if(x.readyState==4){
+            document.write(x.status);
+            if(x.status==200){
+                document.write(x.responseText);
+                document.querySelector('#h1').innerHtML=x.responseText;
+            }
+        }
+    }
+},false);
+}
+   
+
+     </script>
+     <style>
+         #carte{
+             width:500px;
+             height: 500px;
+         }
+     </style>
+</head>
+<body>
+    
+    <a href="#">charger</a>
+    <div id="carte"></div>
+</body>
+</html>
